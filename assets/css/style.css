@@ -1,0 +1,46 @@
+body {
+  font-family: "Poppins";
+}
+
+.image {
+  max-width: 130px;
+}
+
+.image img {
+  width: 100%;
+}
+
+.card-image {
+  min-height: 200px;
+  height: 200px;
+  background-color: grey;
+}
+
+.card-image img {
+  width: 100%;
+  cursor: pointer;
+}
+
+.small {
+  font-size: smaller;
+}
+
+.text-secondary,
+.text-body-secondary,
+p {
+  font-family: "Roboto" !important;
+}
+
+.about-card {
+  height: 100%;
+}
+
+.navigation {
+  border-radius: 0px 15px 0px 15px;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+}

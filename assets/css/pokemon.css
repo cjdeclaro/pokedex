@@ -1,0 +1,89 @@
+/* list */
+
+.imgholder {
+  height: 170px;
+  width: 200px;
+
+  position: relative;
+}
+
+.imgtypeicon {
+  position: absolute;
+  width: 120px;
+  height: auto;
+
+  opacity: 15%;
+
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.imgcontent {
+  position: absolute;
+  width: 150px;
+  height: auto;
+
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+}
+
+/* singles */
+
+.circle {
+  position: absolute;
+  width: 900px;
+  height: 900px;
+  border-radius: 450px;
+
+  top: -600px;
+  left: 50%;
+  transform: translate(-50%);
+}
+
+.circle img {
+  width: 200px;
+  position: absolute;
+  bottom: 50px;
+  left: 50%;
+  transform: translate(-50%);
+  opacity: 30%;
+}
+
+.prev-next-pokemon{
+  width: 50px;
+  height: 50px;
+  position: relative;
+}
+
+.prev-next-pokemon img {
+  width: 70%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.single-img-container {
+  height: 300px;
+}
+
+.single-img-container img {
+  width: 300px;
+}
+
+.single-type-icon {
+  width: 30px;
+  height: 30px;
+  position: relative;
+}
+
+.single-type-icon img {
+  width: 50%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
