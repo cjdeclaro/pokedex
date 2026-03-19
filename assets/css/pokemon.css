@@ -89,6 +89,10 @@
   transform: translate(-50%, -50%);
 }
 
+.form-img-container{
+  width: 100px;
+}
+
 /* Extra small devices (portrait phones, less than 576px) */
 @media (max-width: 575.98px) {
   .imgholder {

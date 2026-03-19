@@ -6,3 +6,13 @@ function titleCase(sentence) {
     })
     .join(' ');
 }
+
+function removeString(toRemove, fullString) {
+  const escaped = toRemove.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // escape regex chars
+  const regex = new RegExp(`\\b${escaped}\\b`, 'i'); // word-safe + case-insensitive
+
+  return fullString
+    .replace(regex, '')
+    .replace(/\s+/g, ' ') // clean extra spaces
+    .trim();
+}

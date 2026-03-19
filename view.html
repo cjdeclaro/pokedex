@@ -79,6 +79,7 @@
           <div class="pt-4 pt-xl-0 z-1">
             <div class="single-img-container text-center">
               <img src="" id="picture">
+              <div class="text-center text-secondary" id="default-form-text"></div>
             </div>
           </div>
 
@@ -114,6 +115,22 @@
 
             <hr>
 
+            <!-- Forms -->
+            <div id="forms-section">
+              <div class="h4">Forms</div>
+
+              <div class="row">
+                <div class="col">
+                  <div class="d-flex flex-row justify-content-center flex-wrap" id="forms-container">
+                    
+                  </div>
+                </div>
+              </div>
+
+              <hr>
+            </div>
+            <!-- Forms -->
+
             <div class="mt-4">
               <div class="row">
                 <div class="col-sm-6 col-12 mt-2">
@@ -131,7 +148,7 @@
                 <div class="col-sm-6 col-12 mt-2">
                   <div class="text-secondary">Ability</div>
                   <div class="card p-3 text-center">
-                    <p id="ability1" class="m-0"></p>
+                    <p id="ability1" class="m-0">-</p>
                   </div>
                 </div>
                 <div class="col-sm-6 col-12 mt-2">
@@ -219,7 +236,7 @@
         const prevPokemon = pokemonData.prevPokemon;
 
         let pokemonId = pokemon.id;
-        let pokemonName = pokemon.name;
+        let pokemonName = pokemon.species.name;
 
         let primaryType = pokemon.types[0].type.name;
         let primaryColor = typeColors[primaryType];
@@ -255,13 +272,22 @@
           </div>`;
         }
 
-        elPicture.src = pokemon.sprites.other["official-artwork"].front_default;
+        const frontDefault = pokemon.sprites.front_default
+        const officialArtwork = pokemon.sprites.other["official-artwork"].front_default;
+
+        elPicture.src = officialArtwork;
         elName.innerHTML = titleCase(pokemonName);
         elNumber.innerHTML += String(pokemonId).padStart(4, '0');
         elType.innerHTML = typePills;
 
-        elNextPokemon.src = nextPokemon.sprites.front_default;
-        elPrevPokemon.src = prevPokemon.sprites.front_default;
+        let nextPokemonImg = nextPokemon.sprites.front_default;
+        nextPokemonImg = nextPokemonImg == null ? nextPokemon.sprites.other["official-artwork"].front_default : nextPokemonImg;
+
+        let prevPokemonImg = prevPokemon.sprites.front_default;
+        prevPokemonImg = prevPokemonImg == null ? prevPokemon.sprites.other["official-artwork"].front_default : prevPokemonImg;
+
+        elNextPokemon.src = nextPokemonImg;
+        elPrevPokemon.src = prevPokemonImg;
 
         elNextPokemonLink.href = "view.html?id=" + nextPokemon.id;
         elPrevPokemonLink.href = "view.html?id=" + prevPokemon.id;
@@ -277,10 +303,44 @@
 
         elWeight.innerHTML = pokemon.weight + "<span class='text-secondary small'>kg</span>";
         elHeight.innerHTML = pokemon.height + "<span class='text-secondary small'>in</span>";
-        elAbility1.innerHTML = titleCase(pokemon.abilities[0].ability.name);
+        
+        if (pokemon.abilities[0] != undefined) {
+          elAbility1.innerHTML = titleCase(pokemon.abilities[0].ability.name);
+        }
 
-        if(pokemon.abilities[1] != undefined){
+        if (pokemon.abilities[1] != undefined) {
           elAbility2.innerHTML = titleCase(pokemon.abilities[1].ability.name);
+        }
+
+        // Varieties
+        const elDefaultForm = document.getElementById('default-form-text');
+        elDefaultForm.innerHTML = removeString(titleCase(pokemon.species.name), titleCase(pokemon.name));
+
+        const elFormsSection = document.getElementById('forms-section');
+        const elFormsContainer = document.getElementById('forms-container');
+
+        const hasOtherVarieties = pokemonData.hasOtherVarieties;
+        const pokemonVarieties = pokemonData.pokemonVarieties;
+
+        if (!hasOtherVarieties) {
+          elDefaultForm.classList.add("d-none");
+          elFormsSection.classList.add("d-none");
+        } else {
+          pokemonVarieties.forEach(pokemonV => {
+            let formImg = pokemonV.sprites.front_default;
+            formImg = formImg == null 
+              ? pokemonV.sprites.other["official-artwork"].front_default 
+              : formImg;
+
+            elFormsContainer.innerHTML += `
+              <a href="view.html?id=${pokemonV.id}">
+                <div class="form-img-container">
+                  <img class="w-100" src="${formImg}">
+                  <div class="text-center text-secondary">${removeString(titleCase(pokemon.species.name), titleCase(pokemonV.name))}</div>
+                </div>
+              </a>
+            `;
+          });
         }
       });
     }

@@ -10,7 +10,7 @@ const loadPokemons = async (page) => {
     const pokemon = await response.json();
 
     let pokemonId = pokemon.id;
-    let pokemonName = pokemon.name;
+    let pokemonName = pokemon.species.name;
 
     let primaryType = pokemon.types[0].type.name;
     let primaryColor = typeColors[primaryType];
