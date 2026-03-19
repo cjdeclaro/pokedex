@@ -116,25 +116,25 @@
 
             <div class="mt-4">
               <div class="row">
-                <div class="col-6 mt-2">
+                <div class="col-sm-6 col-12 mt-2">
                   <div class="text-secondary">Weight</div>
                   <div class="card p-3 text-center">
                     <p id="weight" class="m-0"></p>
                   </div>
                 </div>
-                <div class="col-6 mt-2">
+                <div class="col-sm-6 col-12 mt-2">
                   <div class="text-secondary">Height</div>
                   <div class="card p-3 text-center">
                     <p id="height" class="m-0"></p>
                   </div>
                 </div>
-                <div class="col-6 mt-2">
+                <div class="col-sm-6 col-12 mt-2">
                   <div class="text-secondary">Ability</div>
                   <div class="card p-3 text-center">
                     <p id="ability1" class="m-0"></p>
                   </div>
                 </div>
-                <div class="col-6 mt-2">
+                <div class="col-sm-6 col-12 mt-2">
                   <div class="text-secondary">Hidden Ability</div>
                   <div class="card p-3 text-center">
                     <p id="ability2" class="m-0">-</p>
@@ -235,7 +235,7 @@
               <img src="assets/img/types/icons/`+ primaryType + `.svg">
             </div>
             <div class="text-white">
-              `+ primaryType + `
+              `+ titleCase(primaryType) + `
             </div>
           </div>
         `;
@@ -250,7 +250,7 @@
               <img src="assets/img/types/icons/`+ secondaryType + `.svg">
             </div>
             <div class="text-white">
-              `+ secondaryType + `
+              `+ titleCase(secondaryType) + `
             </div>
           </div>`;
         }
