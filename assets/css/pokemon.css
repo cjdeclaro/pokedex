@@ -104,4 +104,21 @@
   .imgcontent {
     width: 130px;
   }
+
+  .circle {
+    top: -650px;
+  }
+
+  .circle img {
+    width: 180px;
+    bottom: 30px;
+  }
+
+  .single-img-container {
+    height: 250px;
+  }
+
+  .single-img-container img {
+    width: 250px;
+  }
 }
