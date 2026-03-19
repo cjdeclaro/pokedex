@@ -43,6 +43,6 @@ const loadPokemonFull = async (id) => {
     defaultVarietyData: defaultVarietyData,
     pokemonVarieties: pokemonVarieties
   }
-  console.log(data);
+
   return data;
 }
