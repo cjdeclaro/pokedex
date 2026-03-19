@@ -24,19 +24,19 @@ const loadPokemons = async (page) => {
       secondaryType = pokemon.types[1].type.name;
       secondaryColor = typeColors[secondaryType];
 
-      secondTypePill = `<div class="badge badge-pill rounded-5 px-3 py-2" style="background-color: ` + secondaryColor + `;">` + secondaryType + `</div>`;
+      secondTypePill = `<div class="badge badge-pill rounded-3 px-2 py-2" style="background-color: ` + secondaryColor + `;">` + secondaryType + `</div>`;
     }
 
     resultsContainer.innerHTML += `
       <a href="view.html?id=`+pokemonId+`">
         <div class="my-3 d-flex flex-row justify-content-between align-items-center rounded-5" style="background-color: ` + primaryColor + `20;">
-          <div class="ps-5 d-flex flex-md-row flex-column align-items-md-center">
-            <div class="me-5">
-              <div class="text-secondary">No ` + String(pokemonId).padStart(4, '0') + `</div>
-              <div class="h3">` + titleCase(pokemonName) + `</div>
+          <div class="ps-sm-5 ps-3 d-flex flex-md-row flex-column align-items-md-center">
+            <div class="me-sm-5 me-1 d-flex flex-lg-row flex-column align-items-lg-center">
+              <div class="text-secondary me-lg-3">No ` + String(pokemonId).padStart(4, '0') + `</div>
+              <div class="h4 mb-lg-0">` + titleCase(pokemonName) + `</div>
             </div>
             <div class="d-flex flex-row">
-              <div class="me-2 badge badge-pill rounded-5 px-3 py-2" style="background-color: ` + primaryColor + `;">` + primaryType + `</div>
+              <div class="me-1 badge badge-pill rounded-3 px-2 py-2" style="background-color: ` + primaryColor + `;">` + primaryType + `</div>
               `+ secondTypePill +`
             </div>
           </div>
