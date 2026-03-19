@@ -21,10 +21,17 @@ const loadPokemonFull = async (id) => {
   const defaultVariety = species.varieties.find(item => item.is_default);
   const defaultVarietyData = await loadAPI(defaultVariety.pokemon.url);
 
+  const hasOtherForms = pokemon.forms.length > 1;
+  const pokemonForms = pokemon.forms;
+
   const pokemonSpeciesVarieties = species.varieties;
 
   const pokemonVarieties = await Promise.all(
     pokemonSpeciesVarieties.map(v => loadAPI(v.pokemon.url))
+  );
+
+  const formsData = await Promise.all(
+    pokemonForms.map(v => loadAPI(v.url))
   );
 
   let prevPokemonId = defaultVarietyData.id > 1 ? defaultVarietyData.id - 1 : lastPokemon;
@@ -41,7 +48,9 @@ const loadPokemonFull = async (id) => {
     hasOtherVarieties: hasOtherVarieties,
     defaultVariety: defaultVariety,
     defaultVarietyData: defaultVarietyData,
-    pokemonVarieties: pokemonVarieties
+    pokemonVarieties: pokemonVarieties,
+    hasOtherForms: hasOtherForms,
+    formsData: formsData
   }
 
   return data;
