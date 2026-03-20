@@ -149,6 +149,7 @@
             </div>
             <!-- Forms -->
 
+            <!-- Information -->
             <div class="mt-4">
               <div class="h4">Information</div>
               <div class="row">
@@ -180,7 +181,9 @@
 
               <hr class="mt-4">
             </div>
+            <!-- Information -->
 
+            <!-- Evolution -->
             <div id="evo-section" class="">
               <div class="h4">Evolution</div>
 
@@ -193,6 +196,38 @@
               </div>
               <hr>
             </div>
+            <!-- Evolution -->
+
+            <!-- Type Effectiveness-->
+            <div class="h4">Type Effectiveness</div>
+
+            <div class="row">
+              <div class="col">
+                <div class="my-2">
+                  <div class="h6">Normal Damage</div>
+                  <div class="d-flex flex-row flex-wrap" id="typeNormalDmg">
+                  </div>
+                </div>
+                <div class="my-2">
+                  <div class="h6">Weakness</div>
+                  <div class="d-flex flex-row flex-wrap" id="typeWeakness">
+                  </div>
+                </div>
+                <div class="my-2">
+                  <div class="h6">Immunity</div>
+                  <div class="d-flex flex-row flex-wrap" id="typeImmunity">
+                  </div>
+                </div>
+                <div class="my-2">
+                  <div class="h6">Resistance</div>
+                  <div class="d-flex flex-row flex-wrap" id="typeResistance">
+                  </div>
+                </div>
+              </div>
+            </div>
+            <hr>
+            <!-- Type Effectiveness-->
+
           </div>
         </div>
       </div>
@@ -265,6 +300,11 @@
     const elEvoSection = document.getElementById('evo-section');
     const elEvoContainer = document.getElementById('evo-container');
 
+    const elTypeNormalDmg = document.getElementById('typeNormalDmg');
+    const elTypeWeakness = document.getElementById('typeWeakness');
+    const elTypeImmunity = document.getElementById('typeImmunity');
+    const elTypeResistance = document.getElementById('typeResistance');
+
 
     // Get Data
     const queryString = window.location.search;
@@ -285,6 +325,7 @@
         const pokemonVarieties = pokemonData.pokemonVarieties;
         const defaultVarietyData = pokemonData.defaultVarietyData;
         const evolution = pokemonData.evolution;
+        const typeEffectiveness = pokemonData.typeEffectiveness;
 
         let pokemonName = pokemon.species.name;
 
@@ -366,6 +407,19 @@
         if (pokemon.abilities[1] != undefined) {
           elAbility2.innerHTML = titleCase(pokemon.abilities[1].ability.name);
         }
+
+        // Type Effectiveness
+        const normalDamageTypes = typeEffectiveness.normalDamage;
+        elTypeNormalDmg.innerHTML += buildTypeEffPills(normalDamageTypes);
+
+        const weaknessTypes = typeEffectiveness.weakness;
+        elTypeWeakness.innerHTML += buildTypeEffPills(weaknessTypes);
+
+        const immunityTypes = typeEffectiveness.immune;
+        elTypeImmunity.innerHTML += buildTypeEffPills(immunityTypes);
+
+        const resistedTypes = typeEffectiveness.resistance;
+        elTypeResistance.innerHTML += buildTypeEffPills(resistedTypes);
 
         // Varieties
         elDefaultVariety.innerHTML = removeString(titleCase(pokemon.species.name), titleCase(pokemon.name));
