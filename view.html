@@ -9,8 +9,10 @@
   <meta name="title" property="og:title" content="CJ's PokéDex">
   <meta name="type" property="og:type" content="website">
   <meta name="url" property="og:url" content="cjdeclaro.github.io/pokedex">
-  <meta name="image" property="og:image" content="https://cjdeclaro.github.io/pokedex/assets/img/branding/url-preview-banner.png">
-  <meta name="description" property="og:description" content="A fan-made website created as a better PokéDex alternative.">
+  <meta name="image" property="og:image"
+    content="https://cjdeclaro.github.io/pokedex/assets/img/branding/url-preview-banner.png">
+  <meta name="description" property="og:description"
+    content="A fan-made website created as a better PokéDex alternative.">
 
   <title>CJ's PokéDex</title>
 
@@ -122,7 +124,7 @@
               <div class="row">
                 <div class="col">
                   <div class="d-flex flex-row justify-content-center flex-wrap" id="varieties-container">
-                    
+
                   </div>
                 </div>
               </div>
@@ -138,7 +140,7 @@
               <div class="row">
                 <div class="col">
                   <div class="d-flex flex-row justify-content-center flex-wrap" id="forms-container">
-                    
+
                   </div>
                 </div>
               </div>
@@ -148,6 +150,7 @@
             <!-- Forms -->
 
             <div class="mt-4">
+              <div class="h4">Information</div>
               <div class="row">
                 <div class="col-sm-6 col-12 mt-2">
                   <div class="text-secondary">Weight</div>
@@ -174,6 +177,21 @@
                   </div>
                 </div>
               </div>
+
+              <hr class="mt-4">
+            </div>
+
+            <div id="evo-section" class="">
+              <div class="h4">Evolution</div>
+
+              <div class="row">
+                <div class="col">
+                  <div class="d-flex flex-column align-items-center flex-wrap" id="evo-container">
+
+                  </div>
+                </div>
+              </div>
+              <hr>
             </div>
           </div>
         </div>
@@ -237,6 +255,16 @@
     const elAbility1 = document.getElementById("ability1");
     const elAbility2 = document.getElementById("ability2");
 
+    const elDefaultVariety = document.getElementById('default-variety-text');
+    const elVarietiesSection = document.getElementById('varieties-section');
+    const elVarietiesContainer = document.getElementById('varieties-container');
+
+    const elFormsSection = document.getElementById('forms-section');
+    const elFormsContainer = document.getElementById('forms-container');
+
+    const elEvoSection = document.getElementById('evo-section');
+    const elEvoContainer = document.getElementById('evo-container');
+
 
     // Get Data
     const queryString = window.location.search;
@@ -256,6 +284,7 @@
         const hasOtherForms = pokemonData.hasOtherForms;
         const pokemonVarieties = pokemonData.pokemonVarieties;
         const defaultVarietyData = pokemonData.defaultVarietyData;
+        const evolution = pokemonData.evolution;
 
         let pokemonName = pokemon.species.name;
 
@@ -323,11 +352,13 @@
         elNextPokemonCircle.style.backgroundColor = typeColors[nextPokemon.types[0].type.name] + '50';
 
         let flavor_text_json = species.flavor_text_entries.findLast(item => item.language?.name === "en");
-        elBio.innerHTML = flavor_text_json.flavor_text + "<span class='ms-2 text-secondary small'>(Pokémon " + titleCase(flavor_text_json.version.name) + ")</span>";
+        let genus = species.genera.findLast(item => item.language?.name === "en").genus;
+
+        elBio.innerHTML = "The " + genus + ". " + flavor_text_json.flavor_text + "<span class='ms-2 text-secondary small'>(Pokémon " + titleCase(flavor_text_json.version.name) + ")</span>";
 
         elWeight.innerHTML = pokemon.weight + "<span class='text-secondary small'>kg</span>";
         elHeight.innerHTML = pokemon.height + "<span class='text-secondary small'>in</span>";
-        
+
         if (pokemon.abilities[0] != undefined) {
           elAbility1.innerHTML = titleCase(pokemon.abilities[0].ability.name);
         }
@@ -337,35 +368,22 @@
         }
 
         // Varieties
-        const elDefaultVariety = document.getElementById('default-variety-text');
         elDefaultVariety.innerHTML = removeString(titleCase(pokemon.species.name), titleCase(pokemon.name));
-
-        const elVarietiesSection = document.getElementById('varieties-section');
-        const elVarietiesContainer = document.getElementById('varieties-container');
 
         if (hasOtherVarieties) {
           elDefaultVariety.classList.remove("d-none");
           elVarietiesSection.classList.remove("d-none");
           pokemonVarieties.forEach(pokemonV => {
             let varietyImg = pokemonV.sprites.front_default;
-            varietyImg = varietyImg == null 
-              ? pokemonV.sprites.other["official-artwork"].front_default 
+            varietyImg = varietyImg == null
+              ? pokemonV.sprites.other["official-artwork"].front_default
               : varietyImg;
 
-            elVarietiesContainer.innerHTML += `
-              <a href="view.html?id=${pokemonV.id}">
-                <div class="variety-img-container">
-                  <img class="w-100" src="${varietyImg}">
-                  <div class="text-center text-secondary">${removeString(titleCase(pokemon.species.name), titleCase(pokemonV.name))}</div>
-                </div>
-              </a>
-            `;
+            elVarietiesContainer.innerHTML += buildPokemonSingleIcon("view.html?id=" + pokemonV.id, varietyImg, removeString(titleCase(pokemon.species.name), titleCase(pokemonV.name)));
           });
         }
 
         // Forms
-        const elFormsSection = document.getElementById('forms-section');
-        const elFormsContainer = document.getElementById('forms-container');
 
         if (hasOtherForms) {
           elFormsSection.classList.remove("d-none");
@@ -373,16 +391,42 @@
             let formImg = pokemonF.sprites.front_default;
             let formTypes = pokemonF.types;
 
-            elFormsContainer.innerHTML += `
-              <div class="variety-img-container">
-                <img class="w-100" src="${formImg}">
-                <div class="text-center text-secondary">${titleCase(pokemonF.form_name)}</div>
-              </div>
-            `;
+            elFormsContainer.innerHTML += buildPokemonSingleIcon("", formImg, titleCase(pokemonF.form_name));
           });
         }
+
+        // Evolutions
+        renderEvolution(evolution);
       });
     }
+
+    const renderEvolution = async (evolution) => {
+      let currentEvolutionLine = [evolution.chain];
+
+      while (currentEvolutionLine.length > 0) {
+        let evoGroup = "<div class='d-flex flex-row justify-content-center flex-wrap'>";
+
+        const nextEvolutionLine = [];
+
+        for (const currentEvolution of currentEvolutionLine) {
+          const pokemonEvoSpecie = await loadAPI(currentEvolution.species.url);
+          const pokemonEvoInfo = await loadPokemon(pokemonEvoSpecie.id);
+
+          evoGroup += buildPokemonSingleIcon(
+            "view.html?id=" + pokemonEvoInfo.id,
+            pokemonEvoInfo.sprites.front_default,
+            titleCase(currentEvolution.species.name)
+          );
+
+          if (currentEvolution.evolves_to.length > 0) {
+            nextEvolutionLine.push(...currentEvolution.evolves_to);
+          }
+        }
+
+        elEvoContainer.innerHTML += evoGroup + "</div>";
+        currentEvolutionLine = nextEvolutionLine;
+      }
+    };
   </script>
 </body>
 

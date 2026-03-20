@@ -12,6 +12,22 @@ const loadAPI = async (apiurl) => {
   return data;
 }
 
+function buildPokemonSingleIcon(link, img, text){
+  const hasLink = link != "";
+  let baseIcon = `
+    <div class="icon-img-container">
+      <img class="w-100" src="`+img+`">
+      <div class="text-center text-secondary">`+text+`</div>
+    </div>
+  `;
+
+  if(hasLink){
+    baseIcon = `<a href="`+link+`">` + baseIcon + `</a>`;
+  }
+
+  return baseIcon;
+}
+
 const loadPokemonFull = async (id) => {
   id = parseInt(id);
   const pokemon = await loadPokemon(id);
@@ -40,6 +56,9 @@ const loadPokemonFull = async (id) => {
   const prevPokemon = await loadPokemon(prevPokemonId);
   const nextPokemon = await loadPokemon(nextPokemonId);
 
+  // Evolution
+  const evolution = await loadAPI(species.evolution_chain.url);
+
   data = {
     pokemon: pokemon,
     species: species,
@@ -50,8 +69,11 @@ const loadPokemonFull = async (id) => {
     defaultVarietyData: defaultVarietyData,
     pokemonVarieties: pokemonVarieties,
     hasOtherForms: hasOtherForms,
-    formsData: formsData
+    formsData: formsData,
+    evolution: evolution
   }
+
+  console.log(data);
 
   return data;
 }
