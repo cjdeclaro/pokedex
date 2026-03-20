@@ -83,14 +83,14 @@
             </div>
           </div>
 
-          <div class="px-4 pb-4">
+          <div class="px-md-4 px-3 pb-4">
             <div class="d-flex flex-row justify-content-between align-items-end">
-              <a href="" id="prevPokemonLink">
+              <a href="" id="prevPokemonLink" title="">
                 <div class="prev-next-pokemon rounded-circle" id="prevPokemonCircle">
                   <img src="" id="prevPokemon">
                 </div>
               </a>
-              <a href="" id="nextPokemonLink">
+              <a href="" id="nextPokemonLink" title="">
                 <div class="prev-next-pokemon rounded-circle" id="nextPokemonCircle">
                   <img src="" id="nextPokemon">
                 </div>
@@ -117,7 +117,7 @@
 
             <!-- Varieties -->
             <div id="varieties-section" class="d-none">
-              <div class="h4">Varieties</div>
+              <div class="h4">Variations</div>
 
               <div class="row">
                 <div class="col">
@@ -312,6 +312,9 @@
 
         elNextPokemonLink.href = "view.html?id=" + nextPokemon.id;
         elPrevPokemonLink.href = "view.html?id=" + prevPokemon.id;
+
+        elNextPokemonLink.title = titleCase(nextPokemon.species.name);
+        elPrevPokemonLink.title = titleCase(prevPokemon.species.name);
 
         elBGCircle.style.backgroundImage = `linear-gradient( 145deg, ` + secondaryColor + `, ` + primaryColor + `)`;
         elCircleBGIcon.src = `assets/img/types/outlines/` + primaryType + `.svg`;
