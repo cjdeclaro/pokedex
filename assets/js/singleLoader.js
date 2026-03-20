@@ -105,17 +105,22 @@ function buildTypeEffPills(typeObjects) {
   return pills;
 }
 
-function buildPokemonSingleIcon(link, img, text) {
+function buildPokemonSingleIcon(link, img, text, is_small = false) {
+  let smallClass = is_small ? ' small-icon' : '';
   const hasLink = link != "";
   let baseIcon = `
-    <div class="icon-img-container">
-      <img class="w-100" src="`+ img + `">
+    <div class="icon-img-container`+smallClass+`">
+      <img class="h-100" src="`+ img + `">
       <div class="text-center text-secondary">`+ text + `</div>
     </div>
   `;
 
   if (hasLink) {
     baseIcon = `<a href="` + link + `">` + baseIcon + `</a>`;
+  }
+
+  if(img == undefined) {
+    baseIcon = "";
   }
 
   return baseIcon;

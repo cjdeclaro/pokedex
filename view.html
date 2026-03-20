@@ -198,7 +198,7 @@
             </div>
             <!-- Evolution -->
 
-            <!-- Type Effectiveness-->
+            <!-- Type Effectiveness -->
             <div class="h4">Type Effectiveness</div>
 
             <div class="row">
@@ -226,7 +226,61 @@
               </div>
             </div>
             <hr>
-            <!-- Type Effectiveness-->
+            <!-- Type Effectiveness -->
+
+            <!-- Game Sprites -->
+            <div class="h4">Game Sprites</div>
+
+            <div class="row">
+              <div class="col" id="sprites-container">
+                <!-- <div class="my-3">
+                  <div class="h5">Gen I</div>
+                  <div class="row">
+                    <div class="col text-center">
+                      <h6 class="my-2">Red Blue</h6>
+                      <div class="m-1 d-flex flex-row justify-content-center">
+                        <div class="icon-img-container">
+                          <img class="w-100" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-ii/crystal/6.png">
+                        </div>
+                        <div class="icon-img-container">
+                          <img class="w-100" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-ii/crystal/6.png">
+                        </div>
+                      </div>
+                      <div class="m-1 d-flex flex-row justify-content-center">
+                        <div class="icon-img-container">
+                          <img class="w-100" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-ii/crystal/6.png">
+                        </div>
+                        <div class="icon-img-container">
+                          <img class="w-100" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-ii/crystal/6.png">
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col text-center">
+                      <h6 class="my-2">Red Blue</h6>
+                      <div class="m-1 d-flex flex-row justify-content-center">
+                        <div class="icon-img-container">
+                          <img class="w-100" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-ii/crystal/6.png">
+                        </div>
+                        <div class="icon-img-container">
+                          <img class="w-100" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-ii/crystal/6.png">
+                        </div>
+                      </div>
+                      <div class="m-1 d-flex flex-row justify-content-center">
+                        <div class="icon-img-container">
+                          <img class="w-100" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-ii/crystal/6.png">
+                        </div>
+                        <div class="icon-img-container">
+                          <img class="w-100" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-ii/crystal/6.png">
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div> -->
+              </div>
+            </div>
+
+            <hr>
+            <!-- Game Sprites-->
 
           </div>
         </div>
@@ -305,6 +359,7 @@
     const elTypeImmunity = document.getElementById('typeImmunity');
     const elTypeResistance = document.getElementById('typeResistance');
 
+    const elSpritesContainer = document.getElementById('sprites-container');
 
     // Get Data
     const queryString = window.location.search;
@@ -421,6 +476,9 @@
         const resistedTypes = typeEffectiveness.resistance;
         elTypeResistance.innerHTML += buildTypeEffPills(resistedTypes);
 
+        // Game Sprites
+        renderGameSprites(pokemon.sprites);
+
         // Varieties
         elDefaultVariety.innerHTML = removeString(titleCase(pokemon.species.name), titleCase(pokemon.name));
 
@@ -452,6 +510,102 @@
         // Evolutions
         renderEvolution(evolution);
       });
+    }
+
+    function renderGameSprites(pokemonSprites) {
+      const versionSprites = sortGenerations(pokemonSprites.versions);
+      let spriteElement = ``;
+      let generationSprites = ``;
+      let counter = 0;
+      Object.entries(versionSprites).forEach(([generationName, versions]) => {
+        generationSprites = '';
+        counter = 0;
+
+        generationSprites += `
+          <div class="my-3">
+            <div class="h6">`+generationName+`</div>
+              <div class="row">
+          `;
+        Object.entries(versions).forEach(([versionName, spriteVariations]) => {
+          let shiny = '';
+          let versionSprites = '';
+          if(spriteVariations.front_shiny){
+            shiny += `
+            <div class="m-1 d-flex flex-row justify-content-center">
+              `+buildPokemonSingleIcon('', spriteVariations.front_shiny, '', true)+`
+              `+buildPokemonSingleIcon('', spriteVariations.back_shiny, '', true)+`
+            </div>
+            `;
+          }
+          versionSprites += `
+            <div class="col text-center">
+              <h6 class="my-2 small">`+titleCase(versionName)+`</h6>
+              <div class="m-1 d-flex flex-row justify-content-center">
+                `+buildPokemonSingleIcon('', spriteVariations.front_default, '', true)+`
+                `+buildPokemonSingleIcon('', spriteVariations.back_default, '', true)+`
+              </div>
+              `+shiny+`
+            </div>
+          `;
+          if(versionName=='icons'){
+            versionSprites = ''
+          } else if(spriteVariations.front_default) {counter += 1};
+          generationSprites += versionSprites;
+        });
+
+        generationSprites += `
+              </div>
+            </div>
+          </div>
+        `;
+        if(counter == 0) {
+          generationSprites = '';
+        }
+        spriteElement += generationSprites;
+      });
+
+      let showdownElement = '';
+      if(pokemonSprites.other.showdown.front_default){
+        showdownElement = `
+          <div class="col text-center">
+            <h6 class="my-2 small">Showdown</h6>
+            <div class="m-1 d-flex flex-row justify-content-center">
+              `+buildPokemonSingleIcon('', pokemonSprites.other.showdown.front_default, '', true)+`
+              `+buildPokemonSingleIcon('', pokemonSprites.other.showdown.front_shiny, '', true)+`
+            </div>
+          </div>
+        `
+      }
+
+      let homeElement = '';
+      if(pokemonSprites.other.home.front_default){
+        homeElement = `
+          <div class="col text-center">
+            <h6 class="my-2 small">Home</h6>
+            <div class="m-1 d-flex flex-row justify-content-center">
+              `+buildPokemonSingleIcon('', pokemonSprites.other.home.front_default, '', true)+`
+              `+buildPokemonSingleIcon('', pokemonSprites.other.home.front_shiny, '', true)+`
+            </div>
+          </div>
+        `
+      }
+  
+      let otherElement = `
+        <div class="my-3">
+          <div class="h6">Other</div>
+            <div class="row">
+              `+showdownElement+`
+              `+homeElement+`
+            </div>
+          </div>
+        </div>
+      `;
+
+      if(homeElement != '' || showdownElement != ''){
+        spriteElement += otherElement;
+      }
+
+      elSpritesContainer.innerHTML = spriteElement;
     }
 
     const renderEvolution = async (evolution) => {

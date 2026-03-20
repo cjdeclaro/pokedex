@@ -90,7 +90,12 @@
 }
 
 .icon-img-container{
-  width: 100px;
+  max-width: 100px;
+}
+
+.small-icon{
+  width: auto;
+  max-height: 80px;
 }
 
 /* sm */
