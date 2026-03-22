@@ -31,6 +31,9 @@ body {
 
 .text-secondary,
 .text-body-secondary,
+input,
+select,
+option,
 p {
   font-family: "Roboto" !important;
 }
