@@ -32,6 +32,10 @@
 }
 
 /* singles */
+.top-circle-img-container {
+  position: absolute;
+  height: 300px;
+}
 
 .circle {
   position: absolute;
@@ -53,7 +57,7 @@
   opacity: 30%;
 }
 
-.prev-next-pokemon{
+.prev-next-pokemon {
   width: 50px;
   height: 50px;
   position: relative;
@@ -75,6 +79,10 @@
   width: 300px;
 }
 
+.pokemon-content {
+  margin-top: 300px;
+}
+
 .single-type-icon {
   width: 30px;
   height: 30px;
@@ -89,11 +97,11 @@
   transform: translate(-50%, -50%);
 }
 
-.icon-img-container{
+.icon-img-container {
   max-width: 100px;
 }
 
-.small-icon{
+.small-icon {
   width: auto;
   max-height: 80px;
 }
@@ -130,9 +138,11 @@
   .single-img-container img {
     width: 250px;
   }
+
+  .pokemon-content {
+    margin-top: 250px;
+  }
 }
 
 /* xs */
-@media (max-width: 575.98px) {
-
-}
+@media (max-width: 575.98px) {}
