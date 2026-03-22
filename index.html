@@ -187,17 +187,6 @@
   <script src="assets/js/bulkLoader.js"></script>
 
   <script>
-    document.getElementById("searchBtn").addEventListener("click", () => {
-      const query = document.getElementById("searchInput").value.toLowerCase().trim();
-      const type = document.getElementById("typeSelect").value;
-
-      updateURL({ query, type, page: 1 });
-    });
-
-    document.getElementById("clearBtn").addEventListener("click", () => {
-      updateURL({ query: "", type: "", page: 1 });
-    });
-
     preloadPokemonList().then(() => {
       syncInputsWithURL();
       loadResults();

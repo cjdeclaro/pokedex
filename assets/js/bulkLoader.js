@@ -1,4 +1,4 @@
-const resultsContainer = document.getElementById("results");
+ const resultsContainer = document.getElementById("results");
 const searchInput = document.getElementById("searchInput");
 const typeSelect = document.getElementById("typeSelect");
 const searchBtn = document.getElementById("searchBtn");
@@ -6,15 +6,18 @@ const clearBtn = document.getElementById("clearBtn");
 
 const countPerPage = 10;
 const API_BASE = "https://pokeapi.co/api/v2/pokemon";
+const TYPE_API_BASE = "https://pokeapi.co/api/v2/type";
 const FETCH_CONCURRENCY = 8;
 
 let allPokemonList = [];
-const pokemonCache = new Map(); // url -> pokemon json
-const pokemonRequestCache = new Map(); // url -> promise
+
+const pokemonCache = new Map();        // url -> pokemon data
+const pokemonRequestCache = new Map(); // url -> in-flight promise
+const typeCache = new Map();           // type -> [{ name, url, id }]
 
 const getPokemonIdFromUrl = (url) => {
-  const parts = url.split("/");
-  return Number(parts[parts.length - 2]);
+  const parts = url.split("/").filter(Boolean);
+  return Number(parts[parts.length - 1]);
 };
 
 const buildQueryString = ({ query = "", type = "", page = 1 }) => {
@@ -33,7 +36,7 @@ const getFiltersFromURL = () => {
   return {
     query: (params.get("query") || "").trim().toLowerCase(),
     type: (params.get("type") || "").trim().toLowerCase(),
-    page: Math.max(1, Number.parseInt(params.get("page"), 10) || 1)
+    page: Math.max(1, parseInt(params.get("page"), 10) || 1)
   };
 };
 
@@ -43,20 +46,24 @@ const updateURL = ({ query, type, page }) => {
 
 const syncInputsWithURL = () => {
   const { query, type } = getFiltersFromURL();
+
   searchInput.value = query;
   typeSelect.value = type || "";
 };
 
 const preloadPokemonList = async () => {
   const res = await fetch(`${API_BASE}?limit=${lastPokemon}&offset=0`);
-  if (!res.ok) throw new Error("Failed to preload Pokemon list");
+
+  if (!res.ok) {
+    throw new Error("Failed to preload Pokemon list");
+  }
 
   const data = await res.json();
 
-  allPokemonList = data.results.map((p) => ({
-    name: p.name,
-    url: p.url,
-    id: getPokemonIdFromUrl(p.url)
+  allPokemonList = data.results.map((pokemon) => ({
+    name: pokemon.name,
+    url: pokemon.url,
+    id: getPokemonIdFromUrl(pokemon.url)
   }));
 };
 
@@ -81,9 +88,9 @@ const fetchPokemon = async (url) => {
       pokemonRequestCache.delete(url);
       return data;
     })
-    .catch((err) => {
+    .catch((error) => {
       pokemonRequestCache.delete(url);
-      throw err;
+      throw error;
     });
 
   pokemonRequestCache.set(url, request);
@@ -110,52 +117,40 @@ const fetchPokemonBatch = async (items) => {
   return results;
 };
 
-const filterBaseList = (query) => {
-  if (!query) return allPokemonList;
+const fetchPokemonByType = async (type) => {
+  if (!type) return allPokemonList;
 
-  return allPokemonList.filter((p) => {
-    return p.name.includes(query) || String(p.id) === query;
-  });
+  if (typeCache.has(type)) {
+    return typeCache.get(type);
+  }
+
+  const res = await fetch(`${TYPE_API_BASE}/${type}`);
+
+  if (!res.ok) {
+    throw new Error(`Failed to fetch type: ${type}`);
+  }
+
+  const data = await res.json();
+
+  const list = data.pokemon
+    .map((entry) => ({
+      name: entry.pokemon.name,
+      url: entry.pokemon.url,
+      id: getPokemonIdFromUrl(entry.pokemon.url)
+    }))
+    // keep only actual main pokemon range if your dex is limited
+    .filter((pokemon) => pokemon.id <= lastPokemon);
+
+  typeCache.set(type, list);
+  return list;
 };
 
-const getTypeFilteredPage = async ({ filteredList, type, page }) => {
-  const start = (page - 1) * countPerPage;
-  const end = start + countPerPage;
+const filterPokemonList = (list, query) => {
+  if (!query) return list;
 
-  // No type filter: no need to fetch everything
-  if (!type) {
-    const pageItems = filteredList.slice(start, end);
-    const pageData = await fetchPokemonBatch(pageItems);
-    return {
-      total: filteredList.length,
-      pokemon: pageData
-    };
-  }
-
-  // Type filter requires detail data; do it in controlled batches
-  const matched = [];
-  let total = 0;
-
-  for (let i = 0; i < filteredList.length; i += FETCH_CONCURRENCY) {
-    const chunk = filteredList.slice(i, i + FETCH_CONCURRENCY);
-    const detailed = await fetchPokemonBatch(chunk);
-
-    for (const pokemon of detailed) {
-      const hasType = pokemon.types.some((t) => t.type.name === type);
-      if (!hasType) continue;
-
-      if (total >= start && matched.length < countPerPage) {
-        matched.push(pokemon);
-      }
-
-      total++;
-    }
-  }
-
-  return {
-    total,
-    pokemon: matched
-  };
+  return list.filter((pokemon) => {
+    return pokemon.name.includes(query) || String(pokemon.id) === query;
+  });
 };
 
 const updatePagination = (total, currentPage, query, type) => {
@@ -170,12 +165,10 @@ const updatePagination = (total, currentPage, query, type) => {
 
   document.querySelectorAll(".btnPrevPage").forEach((btn) => {
     btn.href = prevHref;
-    btn.setAttribute("aria-disabled", total === 0 ? "true" : "false");
   });
 
   document.querySelectorAll(".btnNextPage").forEach((btn) => {
     btn.href = nextHref;
-    btn.setAttribute("aria-disabled", total === 0 ? "true" : "false");
   });
 };
 
@@ -239,15 +232,23 @@ const loadResults = async () => {
   resultsContainer.textContent = "Loading...";
 
   try {
-    const filteredList = filterBaseList(query);
-    const { total, pokemon } = await getTypeFilteredPage({
-      filteredList,
-      type,
-      page
-    });
+    let baseList = type
+      ? await fetchPokemonByType(type)
+      : allPokemonList;
 
-    renderResults(pokemon);
-    updatePagination(total, page, query, type);
+    baseList = filterPokemonList(baseList, query);
+
+    const total = baseList.length;
+    const lastPage = Math.max(1, Math.ceil(total / countPerPage));
+    const safePage = Math.min(page, lastPage);
+
+    const start = (safePage - 1) * countPerPage;
+    const pageItems = baseList.slice(start, start + countPerPage);
+
+    const pokemonData = await fetchPokemonBatch(pageItems);
+
+    renderResults(pokemonData);
+    updatePagination(total, safePage, query, type);
   } catch (error) {
     console.error(error);
     resultsContainer.innerHTML = `<div class="px-4 py-3 text-danger">Failed to load Pokémon.</div>`;
@@ -263,7 +264,11 @@ searchBtn.addEventListener("click", () => {
 });
 
 clearBtn.addEventListener("click", () => {
-  updateURL({ query: "", type: "", page: 1 });
+  updateURL({
+    query: "",
+    type: "",
+    page: 1
+  });
 });
 
 preloadPokemonList()
