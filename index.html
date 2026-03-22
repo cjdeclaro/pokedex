@@ -5,12 +5,13 @@
   <meta charset="utf-8">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="title" property="og:title" content="CJ's PokéDex">
   <meta name="type" property="og:type" content="website">
   <meta name="url" property="og:url" content="cjdeclaro.github.io/pokedex">
-  <meta name="image" property="og:image" content="https://cjdeclaro.github.io/pokedex/assets/img/branding/url preview banner.png">
-  <meta name="description" property="og:description" content="A fan-made website created as a better PokéDex alternative.">
+  <meta name="image" property="og:image"
+    content="https://cjdeclaro.github.io/pokedex/assets/img/branding/url preview banner.png">
+  <meta name="description" property="og:description"
+    content="A fan-made website created as a better PokéDex alternative.">
 
   <title>CJ's PokéDex</title>
 
@@ -49,7 +50,7 @@
                 </div>
                 <div class="d-flex flex-row flex-xl-column small mt-xl-3">
                   <div class="my-2 me-2">
-                    <input class="form-control" placeholder="Name or Number" id="searchInput"></input>
+                    <input class="form-control" placeholder="Name or Number" id="searchInput">
                   </div>
                   <div class="my-2 me-2">
                     <select class="form-select" id="typeSelect">
@@ -186,35 +187,8 @@
   <script src="assets/js/bulkLoader.js"></script>
 
   <script>
-    const queryString = window.location.search;
-    const urlParams = new URLSearchParams(queryString);
-
-    let pageUrl = urlParams.get('page');
-    pageUrl = pageUrl == null ? 1 : pageUrl;
-
-    pageUrl = parseInt(pageUrl);
-
-    const btnPrevPages = document.getElementsByClassName("btnPrevPage");
-    const btnNextPages = document.getElementsByClassName("btnNextPage");
-
-    let prevPage = pageUrl-1;
-    let nextPage = pageUrl+1;
-
-    let lastPage = parseInt(lastPokemon / countPerPage) + 1;
-
-    prevPage = prevPage == 0 ? lastPage : prevPage;
-    nextPage = nextPage > lastPage ? 1 : nextPage;
-
-    for(i = 0; i < btnPrevPages.length; i++){
-      btnPrevPages[i].href="?page="+(prevPage);
-    }
-
-    for(i = 0; i < btnNextPages.length; i++){
-      btnNextPages[i].href="?page="+(nextPage);
-    }
-
     document.getElementById("searchBtn").addEventListener("click", () => {
-      const query = document.getElementById("searchInput").value.toLowerCase();
+      const query = document.getElementById("searchInput").value.toLowerCase().trim();
       const type = document.getElementById("typeSelect").value;
 
       updateURL({ query, type, page: 1 });
