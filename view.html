@@ -5,7 +5,6 @@
   <meta charset="utf-8">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="title" property="og:title" content="CJ's PokéDex">
   <meta name="type" property="og:type" content="website">
   <meta name="url" property="og:url" content="cjdeclaro.github.io/pokedex">
@@ -44,22 +43,46 @@
           <div class="card glass red-glass text-light shadow rounded-4 p-4 py-xl-5">
             <div class="d-flex flex-row flex-xl-column align-items-center">
               <div class="my-2 mx-4 mx-xl-0 mt-xl-4 mb-xl-0">
-                <div class="text-start text-xl-center">
-                  <div class="h4">
-                    <b>CJ's PokéDex</b>
+                <form action='./'>
+                  <div class="text-start text-xl-center">
+                    <div class="h4">
+                      <b>CJ's PokéDex</b>
+                    </div>
                   </div>
-                </div>
-                <div class="d-flex flex-row flex-xl-column small mt-xl-3">
-                  <div class="my-2 my-xl-3 d-flex flex-row flex-xl-column">
-                    Search Forms Here
+
+                  <div class="d-flex flex-row flex-xl-column small mt-xl-3">
+                    <div class="my-2 me-2">
+                      <input class="form-control" placeholder="Name or Number" id="searchInput" name="query">
+                    </div>
+                    <div class="my-2 me-2">
+                      <select class="form-select" id="typeSelect" name="type">
+                        <option value="">Type</option>
+                        <option value="normal">Normal</option>
+                        <option value="fire">Fire</option>
+                        <option value="water">Water</option>
+                        <option value="electric">Electric</option>
+                        <option value="grass">Grass</option>
+                        <option value="ice">Ice</option>
+                        <option value="fighting">Fighting</option>
+                        <option value="poison">Poison</option>
+                        <option value="ground">Ground</option>
+                        <option value="flying">Flying</option>
+                        <option value="psychic">Psychic</option>
+                        <option value="bug">Bug</option>
+                        <option value="rock">Rock</option>
+                        <option value="ghost">Ghost</option>
+                        <option value="dragon">Dragon</option>
+                        <option value="dark">Dark</option>
+                        <option value="steel">Steel</option>
+                        <option value="fairy">Fairy</option>
+                      </select>
+                    </div>
                   </div>
-                </div>
-                <!-- <div class="d-flex flex-row justify-content-xl-center justify-content-start mt-2 mt-xl-3">
-                  <a target="_blank" href="https://instagram.com/cjdeclaro"><i class="me-2 fa fa-instagram"></i></a>
-                  <a target="_blank" href="https://linkedin.com/in/cjdeclaro"><i class="mx-2 fa fa-linkedin"></i></a>
-                  <a target="_blank" href="https://github.com/cjdeclaro"><i class="mx-2 fa fa-github"></i></a>
-                  <a target="_blank" href="https://g.dev/cjdeclaro"><i class="ms-2 fa fa-google"></i></a>
-                </div> -->
+                  <div class="text-start text-xl-center">
+                    <input type="button" class="mt-3 btn btn-outline-danger" value="Clear" id="clearBtn">
+                    <input type="submit" class="mt-3 btn btn-danger" value="Search" id="searchBtn">
+                  </div>
+                </form>
               </div>
             </div>
           </div>
@@ -323,7 +346,6 @@
   <script src="assets/js/singleLoader.js"></script>
 
   <script>
-    // Initialize Elements
     const elName = document.getElementById("name");
     const elNumber = document.getElementById("number");
     const elType = document.getElementById("type");
@@ -346,297 +368,140 @@
     const elAbility1 = document.getElementById("ability1");
     const elAbility2 = document.getElementById("ability2");
 
-    const elDefaultVariety = document.getElementById('default-variety-text');
-    const elVarietiesSection = document.getElementById('varieties-section');
-    const elVarietiesContainer = document.getElementById('varieties-container');
+    const elDefaultVariety = document.getElementById("default-variety-text");
+    const elVarietiesSection = document.getElementById("varieties-section");
+    const elVarietiesContainer = document.getElementById("varieties-container");
 
-    const elFormsSection = document.getElementById('forms-section');
-    const elFormsContainer = document.getElementById('forms-container');
+    const elFormsSection = document.getElementById("forms-section");
+    const elFormsContainer = document.getElementById("forms-container");
 
-    const elEvoSection = document.getElementById('evo-section');
-    const elEvoContainer = document.getElementById('evo-container');
+    const elEvoContainer = document.getElementById("evo-container");
 
-    const elTypeNormalDmg = document.getElementById('typeNormalDmg');
-    const elTypeWeakness = document.getElementById('typeWeakness');
-    const elTypeImmunity = document.getElementById('typeImmunity');
-    const elTypeResistance = document.getElementById('typeResistance');
+    const elTypeNormalDmg = document.getElementById("typeNormalDmg");
+    const elTypeWeakness = document.getElementById("typeWeakness");
+    const elTypeImmunity = document.getElementById("typeImmunity");
+    const elTypeResistance = document.getElementById("typeResistance");
 
-    const elSpritesContainer = document.getElementById('sprites-container');
+    const elSpritesContainer = document.getElementById("sprites-container");
 
-    // Get Data
-    const queryString = window.location.search;
-    const urlParams = new URLSearchParams(queryString);
-
-    const id = urlParams.get('id');
+    const urlParams = new URLSearchParams(window.location.search);
+    const id = urlParams.get("id");
 
     if (id) {
-      loadPokemonFull(id).then((pokemonData) => {
-        const pokemon = pokemonData.pokemon;
-        const species = pokemonData.species;
-        const nextPokemon = pokemonData.nextPokemon;
-        const prevPokemon = pokemonData.prevPokemon;
+      loadPokemonFull(id)
+        .then(async (pokemonData) => {
+          const {
+            pokemon,
+            species,
+            nextPokemon,
+            prevPokemon,
+            hasOtherVarieties,
+            formsData,
+            hasOtherForms,
+            pokemonVarieties,
+            defaultVarietyData,
+            evolution,
+            typeEffectiveness
+          } = pokemonData;
 
-        const hasOtherVarieties = pokemonData.hasOtherVarieties;
-        const formsData = pokemonData.formsData;
-        const hasOtherForms = pokemonData.hasOtherForms;
-        const pokemonVarieties = pokemonData.pokemonVarieties;
-        const defaultVarietyData = pokemonData.defaultVarietyData;
-        const evolution = pokemonData.evolution;
-        const typeEffectiveness = pokemonData.typeEffectiveness;
+          const pokemonName = pokemon.species.name;
+          const primaryType = pokemon.types[0].type.name;
+          const primaryColor = typeColors[primaryType];
+          const secondaryType = pokemon.types[1]?.type.name || primaryType;
+          const secondaryColor = typeColors[secondaryType] || "white";
 
-        let pokemonName = pokemon.species.name;
+          const officialArtwork =
+            pokemon.sprites.other?.["official-artwork"]?.front_default ||
+            pokemon.sprites.front_default;
 
-        let primaryType = pokemon.types[0].type.name;
-        let primaryColor = typeColors[primaryType];
+          elPicture.src = officialArtwork;
+          elName.textContent = titleCase(pokemonName);
+          elNumber.textContent = `No ${String(defaultVarietyData.id).padStart(4, "0")}`;
+          elType.innerHTML = buildMainTypePills(pokemon);
 
-        let secondaryType = primaryType;
-        let secondaryColor = "white";
+          elNextPokemon.src = getBestPokemonImage(nextPokemon);
+          elPrevPokemon.src = getBestPokemonImage(prevPokemon);
 
-        let secondTypePill = "";
+          elNextPokemonLink.href = `view.html?id=${nextPokemon.id}`;
+          elPrevPokemonLink.href = `view.html?id=${prevPokemon.id}`;
 
-        let typePills = `
-          <div class="me-2 rounded-5 px-3 py-1 d-flex flex-row align-items-center" style="background-color: `+ primaryColor + `">
-            <div class="rounded-circle bg-light single-type-icon me-2">
-              <img src="assets/img/types/icons/`+ primaryType + `.svg">
-            </div>
-            <div class="text-white">
-              `+ titleCase(primaryType) + `
-            </div>
-          </div>
-        `;
+          elNextPokemonLink.title = titleCase(nextPokemon.species.name);
+          elPrevPokemonLink.title = titleCase(prevPokemon.species.name);
 
-        if (pokemon.types[1] != undefined) {
-          secondaryType = pokemon.types[1].type.name;
-          secondaryColor = typeColors[secondaryType];
+          elBGCircle.style.backgroundImage = `linear-gradient(145deg, ${secondaryColor}, ${primaryColor})`;
+          elCircleBGIcon.src = `assets/img/types/outlines/${primaryType}.svg`;
 
-          typePills += `
-          <div class="rounded-5 px-3 py-1 d-flex flex-row align-items-center" style="background-color: `+ secondaryColor + `">
-            <div class="rounded-circle bg-light single-type-icon me-2">
-              <img src="assets/img/types/icons/`+ secondaryType + `.svg">
-            </div>
-            <div class="text-white">
-              `+ titleCase(secondaryType) + `
-            </div>
-          </div>`;
-        }
+          elPrevPokemonCircle.style.backgroundColor = `${typeColors[prevPokemon.types[0].type.name]}50`;
+          elNextPokemonCircle.style.backgroundColor = `${typeColors[nextPokemon.types[0].type.name]}50`;
 
-        const frontDefault = pokemon.sprites.front_default
-        const officialArtwork = pokemon.sprites.other["official-artwork"].front_default;
+          const flavorText = getEnglishFlavorText(species);
+          const genus = getEnglishGenus(species);
 
-        elPicture.src = officialArtwork;
-        elName.innerHTML = titleCase(pokemonName);
-        elNumber.innerHTML += String(defaultVarietyData.id).padStart(4, '0');
-        elType.innerHTML = typePills;
-
-        let nextPokemonImg = nextPokemon.sprites.front_default;
-        nextPokemonImg = nextPokemonImg == null ? nextPokemon.sprites.other["official-artwork"].front_default : nextPokemonImg;
-
-        let prevPokemonImg = prevPokemon.sprites.front_default;
-        prevPokemonImg = prevPokemonImg == null ? prevPokemon.sprites.other["official-artwork"].front_default : prevPokemonImg;
-
-        elNextPokemon.src = nextPokemonImg;
-        elPrevPokemon.src = prevPokemonImg;
-
-        elNextPokemonLink.href = "view.html?id=" + nextPokemon.id;
-        elPrevPokemonLink.href = "view.html?id=" + prevPokemon.id;
-
-        elNextPokemonLink.title = titleCase(nextPokemon.species.name);
-        elPrevPokemonLink.title = titleCase(prevPokemon.species.name);
-
-        elBGCircle.style.backgroundImage = `linear-gradient( 145deg, ` + secondaryColor + `, ` + primaryColor + `)`;
-        elCircleBGIcon.src = `assets/img/types/outlines/` + primaryType + `.svg`;
-
-        elPrevPokemonCircle.style.backgroundColor = typeColors[prevPokemon.types[0].type.name] + '50';
-        elNextPokemonCircle.style.backgroundColor = typeColors[nextPokemon.types[0].type.name] + '50';
-
-        let flavor_text_json = species.flavor_text_entries.findLast(item => item.language?.name === "en");
-        let genus = species.genera.findLast(item => item.language?.name === "en").genus;
-
-        elBio.innerHTML = "The " + genus + ". " + flavor_text_json.flavor_text + "<span class='ms-2 text-secondary small'>(Pokémon " + titleCase(flavor_text_json.version.name) + ")</span>";
-
-        elWeight.innerHTML = pokemon.weight + "<span class='text-secondary small'>kg</span>";
-        elHeight.innerHTML = pokemon.height + "<span class='text-secondary small'>in</span>";
-
-        if (pokemon.abilities[0] != undefined) {
-          elAbility1.innerHTML = titleCase(pokemon.abilities[0].ability.name);
-        }
-
-        if (pokemon.abilities[1] != undefined) {
-          elAbility2.innerHTML = titleCase(pokemon.abilities[1].ability.name);
-        }
-
-        // Type Effectiveness
-        const normalDamageTypes = typeEffectiveness.normalDamage;
-        elTypeNormalDmg.innerHTML += buildTypeEffPills(normalDamageTypes);
-
-        const weaknessTypes = typeEffectiveness.weakness;
-        elTypeWeakness.innerHTML += buildTypeEffPills(weaknessTypes);
-
-        const immunityTypes = typeEffectiveness.immune;
-        elTypeImmunity.innerHTML += buildTypeEffPills(immunityTypes);
-
-        const resistedTypes = typeEffectiveness.resistance;
-        elTypeResistance.innerHTML += buildTypeEffPills(resistedTypes);
-
-        // Game Sprites
-        renderGameSprites(pokemon.sprites);
-
-        // Varieties
-        elDefaultVariety.innerHTML = removeString(titleCase(pokemon.species.name), titleCase(pokemon.name));
-
-        if (hasOtherVarieties) {
-          elDefaultVariety.classList.remove("d-none");
-          elVarietiesSection.classList.remove("d-none");
-          pokemonVarieties.forEach(pokemonV => {
-            let varietyImg = pokemonV.sprites.front_default;
-            varietyImg = varietyImg == null
-              ? pokemonV.sprites.other["official-artwork"].front_default
-              : varietyImg;
-
-            elVarietiesContainer.innerHTML += buildPokemonSingleIcon("view.html?id=" + pokemonV.id, varietyImg, removeString(titleCase(pokemon.species.name), titleCase(pokemonV.name)));
-          });
-        }
-
-        // Forms
-
-        if (hasOtherForms) {
-          elFormsSection.classList.remove("d-none");
-          formsData.forEach(pokemonF => {
-            let formImg = pokemonF.sprites.front_default;
-            let formTypes = pokemonF.types;
-
-            elFormsContainer.innerHTML += buildPokemonSingleIcon("", formImg, titleCase(pokemonF.form_name));
-          });
-        }
-
-        // Evolutions
-        renderEvolution(evolution);
-      });
-    }
-
-    function renderGameSprites(pokemonSprites) {
-      const versionSprites = sortGenerations(pokemonSprites.versions);
-      let spriteElement = ``;
-      let generationSprites = ``;
-      let counter = 0;
-      Object.entries(versionSprites).forEach(([generationName, versions]) => {
-        generationSprites = '';
-        counter = 0;
-
-        generationSprites += `
-          <div class="my-3">
-            <div class="h6">`+generationName+`</div>
-              <div class="row">
-          `;
-        Object.entries(versions).forEach(([versionName, spriteVariations]) => {
-          let shiny = '';
-          let versionSprites = '';
-          if(spriteVariations.front_shiny){
-            shiny += `
-            <div class="m-1 d-flex flex-row justify-content-center">
-              `+buildPokemonSingleIcon('', spriteVariations.front_shiny, '', true)+`
-              `+buildPokemonSingleIcon('', spriteVariations.back_shiny, '', true)+`
-            </div>
-            `;
+          if (flavorText && genus) {
+            elBio.innerHTML = `The ${genus.genus}. ${flavorText.flavor_text}<span class='ms-2 text-secondary small'>(Pokémon ${titleCase(flavorText.version.name)})</span>`;
           }
-          versionSprites += `
-            <div class="col text-center">
-              <h6 class="my-2 small">`+titleCase(versionName)+`</h6>
-              <div class="m-1 d-flex flex-row justify-content-center">
-                `+buildPokemonSingleIcon('', spriteVariations.front_default, '', true)+`
-                `+buildPokemonSingleIcon('', spriteVariations.back_default, '', true)+`
-              </div>
-              `+shiny+`
-            </div>
-          `;
-          if(versionName=='icons'){
-            versionSprites = ''
-          } else if(spriteVariations.front_default) {counter += 1};
-          generationSprites += versionSprites;
-        });
 
-        generationSprites += `
-              </div>
-            </div>
-          </div>
-        `;
-        if(counter == 0) {
-          generationSprites = '';
-        }
-        spriteElement += generationSprites;
-      });
+          elWeight.innerHTML = `${pokemon.weight / 10}<span class='text-secondary small'>kg</span>`;
+          elHeight.innerHTML = `${pokemon.height / 10}<span class='text-secondary small'>m</span>`;
 
-      let showdownElement = '';
-      if(pokemonSprites.other.showdown.front_default){
-        showdownElement = `
-          <div class="col text-center">
-            <h6 class="my-2 small">Showdown</h6>
-            <div class="m-1 d-flex flex-row justify-content-center">
-              `+buildPokemonSingleIcon('', pokemonSprites.other.showdown.front_default, '', true)+`
-              `+buildPokemonSingleIcon('', pokemonSprites.other.showdown.front_shiny, '', true)+`
-            </div>
-          </div>
-        `
-      }
+          elAbility1.textContent = pokemon.abilities[0]?.ability?.name
+            ? titleCase(pokemon.abilities[0].ability.name)
+            : "-";
 
-      let homeElement = '';
-      if(pokemonSprites.other.home.front_default){
-        homeElement = `
-          <div class="col text-center">
-            <h6 class="my-2 small">Home</h6>
-            <div class="m-1 d-flex flex-row justify-content-center">
-              `+buildPokemonSingleIcon('', pokemonSprites.other.home.front_default, '', true)+`
-              `+buildPokemonSingleIcon('', pokemonSprites.other.home.front_shiny, '', true)+`
-            </div>
-          </div>
-        `
-      }
-  
-      let otherElement = `
-        <div class="my-3">
-          <div class="h6">Other</div>
-            <div class="row">
-              `+showdownElement+`
-              `+homeElement+`
-            </div>
-          </div>
-        </div>
-      `;
+          const hiddenAbility = pokemon.abilities.find((a) => a.is_hidden);
+          elAbility2.textContent = hiddenAbility?.ability?.name
+            ? titleCase(hiddenAbility.ability.name)
+            : "-";
 
-      if(homeElement != '' || showdownElement != ''){
-        spriteElement += otherElement;
-      }
+          elTypeNormalDmg.innerHTML = buildTypeEffPills(typeEffectiveness.normalDamage);
+          elTypeWeakness.innerHTML = buildTypeEffPills(typeEffectiveness.weakness);
+          elTypeImmunity.innerHTML = buildTypeEffPills(typeEffectiveness.immune);
+          elTypeResistance.innerHTML = buildTypeEffPills(typeEffectiveness.resistance);
 
-      elSpritesContainer.innerHTML = spriteElement;
-    }
+          renderGameSprites(pokemon.sprites, elSpritesContainer);
 
-    const renderEvolution = async (evolution) => {
-      let currentEvolutionLine = [evolution.chain];
-
-      while (currentEvolutionLine.length > 0) {
-        let evoGroup = "<div class='d-flex flex-row justify-content-center flex-wrap'>";
-
-        const nextEvolutionLine = [];
-
-        for (const currentEvolution of currentEvolutionLine) {
-          const pokemonEvoSpecie = await loadAPI(currentEvolution.species.url);
-          const pokemonEvoInfo = await loadPokemon(pokemonEvoSpecie.id);
-
-          evoGroup += buildPokemonSingleIcon(
-            "view.html?id=" + pokemonEvoInfo.id,
-            pokemonEvoInfo.sprites.front_default,
-            titleCase(currentEvolution.species.name)
+          elDefaultVariety.textContent = removeString(
+            titleCase(pokemon.species.name),
+            titleCase(pokemon.name)
           );
 
-          if (currentEvolution.evolves_to.length > 0) {
-            nextEvolutionLine.push(...currentEvolution.evolves_to);
-          }
-        }
+          if (hasOtherVarieties) {
+            elDefaultVariety.classList.remove("d-none");
+            elVarietiesSection.classList.remove("d-none");
 
-        elEvoContainer.innerHTML += evoGroup + "</div>";
-        currentEvolutionLine = nextEvolutionLine;
-      }
-    };
+            elVarietiesContainer.innerHTML = pokemonVarieties.map((pokemonV) => {
+              return buildPokemonSingleIcon(
+                `view.html?id=${pokemonV.id}`,
+                getBestPokemonImage(pokemonV),
+                removeString(titleCase(pokemon.species.name), titleCase(pokemonV.name))
+              );
+            }).join("");
+          }
+
+          if (hasOtherForms) {
+            elFormsSection.classList.remove("d-none");
+
+            elFormsContainer.innerHTML = formsData.map((pokemonF) => {
+              return buildPokemonSingleIcon(
+                "",
+                getBestPokemonImage(pokemonF),
+                titleCase(pokemonF.form_name)
+              );
+            }).join("");
+          }
+
+          await renderEvolution(evolution, elEvoContainer);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    }
+
+    document.getElementById("clearBtn").addEventListener("click", () => {
+      document.getElementById("searchInput").value = "";
+      document.getElementById("typeSelect").value = "";
+      window.location.href = "./";
+    });
   </script>
 </body>
 
