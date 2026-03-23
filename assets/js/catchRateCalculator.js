@@ -1,3 +1,18 @@
+let calcHidden = true;
+const calcContainer = document.getElementById("calcContainer");
+const btnCalcShow = document.getElementById("btnCalcShow");
+
+function showHideCalc(){
+  calcHidden = !calcHidden;
+  if(calcHidden){
+    btnCalcShow.innerHTML = "Show";
+    calcContainer.classList.add("d-none");
+  } else {
+    btnCalcShow.innerHTML = "Hide";
+    calcContainer.classList.remove("d-none");
+  }
+}
+
 const catchCalculatorState = {
   captureRate: null,
   pokemonTypes: [],

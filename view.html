@@ -92,11 +92,11 @@
                   <div class="text-start text-xl-center">
                     <div class="h6">
                       <b>Catch Rate Calculator</b>
-                      <button class="ms-2 btn btn-sm btn-outline-secondary rounded-5 d-lg-none">Show</button>
+                      <button class="ms-2 btn btn-sm btn-outline-secondary rounded-5 d-lg-none" onclick="showHideCalc()" id="btnCalcShow">Show</button>
                     </div>
                   </div>
 
-                  <div class="d-lg-block d-none">
+                  <div class="d-lg-block d-none" id="calcContainer">
                     <div class="d-flex flex-row flex-xl-column small mt-xl-3">
                       <div class="my-2 me-2 me-xl-0">
                         <input class="form-control" placeholder="Current HP" id="calcHP" type="number" min="1">
@@ -417,6 +417,9 @@
   <script src="assets/js/catchRateCalculator.js"></script>
 
   <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const id = urlParams.get("id");
+
     const elName = document.getElementById("name");
     const elNumber = document.getElementById("number");
     const elType = document.getElementById("type");
@@ -454,9 +457,6 @@
     const elTypeResistance = document.getElementById("typeResistance");
 
     const elSpritesContainer = document.getElementById("sprites-container");
-
-    const urlParams = new URLSearchParams(window.location.search);
-    const id = urlParams.get("id");
 
     if (id) {
       loadPokemonFull(id)
