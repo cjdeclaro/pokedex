@@ -94,11 +94,11 @@ function buildPokemonSingleIcon(link, img, text, isSmall = false) {
   const content = `
     <div class="icon-img-container${smallClass}">
       <img class="h-100" src="${img}" alt="${text || "Pokemon"}">
-      <div class="text-center text-secondary">${text}</div>
     </div>
+    <div class="text-center text-secondary">${text}</div>
   `;
 
-  return link ? `<a href="${link}">${content}</a>` : content;
+  return link ? `<a href="${link}" class="mt-1">${content}</a>` : `<div class="mt-1">${content}</div>`;
 }
 
 function getBestPokemonImage(pokemon) {
