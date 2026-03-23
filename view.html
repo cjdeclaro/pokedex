@@ -90,35 +90,66 @@
               <div class="card glass shadow rounded-4 p-4 mt-xl-3 mt-lg-0 mt-3 h-100">
                 <div class="my-2 mx-4 mx-lg-0">
                   <div class="text-start text-xl-center">
-                    <div class="h5">
+                    <div class="h6">
                       <b>Catch Rate Calculator</b>
+                      <button class="ms-2 btn btn-sm btn-outline-secondary rounded-5 d-lg-none">Show</button>
                     </div>
                   </div>
-                  <div class="d-flex flex-row flex-xl-column small mt-xl-3">
-                    <div class="my-2 me-2 me-xl-0">
-                      <input class="form-control" placeholder="HP" id="calcHP">
+
+                  <div class="d-lg-block d-none">
+                    <div class="d-flex flex-row flex-xl-column small mt-xl-3">
+                      <div class="my-2 me-2 me-xl-0">
+                        <input class="form-control" placeholder="Current HP" id="calcHP" type="number" min="1">
+                      </div>
+                      <div class="my-2 me-2 me-xl-0">
+                        <input class="form-control" placeholder="Max HP" id="calcMaxHP" type="number" min="1">
+                      </div>
                     </div>
-                    <div class="my-2 me-2 me-xl-0">
-                      <input class="form-control" placeholder="Lvl" id="calc">
+
+                    <div class="d-flex flex-row flex-xl-column small">
+                      <div class="my-2 me-2 me-xl-0">
+                        <input class="form-control" placeholder="Lvl" id="calcLevel" type="number" min="1" max="100">
+                      </div>
+                      <div class="my-2 me-2 me-xl-0">
+                        <input class="form-control" placeholder="Turn Count" id="calcTurns" type="number" min="1"
+                          value="1">
+                      </div>
                     </div>
-                  </div>
-                  <div class="d-flex flex-row flex-xl-column small">
-                    <div class="my-2 me-2 me-xl-0">
-                      <select class="form-select" id="calcStatus">
-                        <option value="">Status</option>
-                        <option value="normal">Normal</option>
-                      </select>
+
+                    <div class="d-flex flex-row flex-xl-column small">
+                      <div class="my-2 me-2 me-xl-0">
+                        <select class="form-select" id="calcStatus">
+                          <option value="">Status</option>
+                        </select>
+                      </div>
+                      <div class="my-2 me-2 me-xl-0">
+                        <select class="form-select" id="calcBall">
+                          <option value="">Ball</option>
+                        </select>
+                      </div>
                     </div>
-                    <div class="my-2 me-2 me-xl-0">
-                      <select class="form-select" id="calcBall">
-                        <option value="">Ball</option>
-                        <option value="pokeball">PokeBall</option>
-                      </select>
+
+                    <div class="d-flex flex-row flex-xl-column small">
+                      <div class="my-2 me-2 me-xl-0">
+                        <select class="form-select" id="calcEnvironment">
+                          <option value="normal">Environment</option>
+                          <option value="normal">Normal</option>
+                          <option value="water">Water</option>
+                          <option value="bug">Bug</option>
+                          <option value="cave">Cave</option>
+                          <option value="night">Night</option>
+                        </select>
+                      </div>
+                      <div class="my-2 me-2 me-xl-0 d-flex align-items-center">
+                        <input class="form-check-input me-2" type="checkbox" id="calcOwned">
+                        <label class="form-check-label small" for="calcOwned">Already caught</label>
+                      </div>
                     </div>
-                  </div>
-                  <div class="text-start text-xl-center mt-3">
-                    <div class="h4 text-secondary m-0">
-                      <b>100%</b>
+
+                    <div class="text-start text-xl-center mt-3">
+                      <div class="h4 text-secondary m-0">
+                        <b id="catchRateResult">-%</b>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -383,6 +414,7 @@
   <script src="assets/js/data.js"></script>
   <script src="assets/js/helpers.js"></script>
   <script src="assets/js/singleLoader.js"></script>
+  <script src="assets/js/catchRateCalculator.js"></script>
 
   <script>
     const elName = document.getElementById("name");

@@ -169,6 +169,8 @@ async function loadPokemonFull(id) {
     loadPokemon(nextPokemonId)
   ]);
 
+  setCatchCalculatorPokemonData({ species, pokemon });
+
   return {
     pokemon,
     species,
